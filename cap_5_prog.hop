@@ -1,0 +1,78 @@
+! Capítulo 5: Definições de listas por compreensão
+
+uses cap_4;
+
+! >: fatores 30;
+! >> [1, 2, 3, 5, 6, 10, 15, 30] : list num
+fatores : num -> list num;
+fatores n <= filter (\x => n mod x = 0, (1..n));
+
+! >: primo 30;
+! >> false : truval
+! >: primo 31;
+! >> true : truval
+primo : num -> truval;
+primo n <= fatores n = [1, n];
+
+! >: primos 31;
+! >> [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31] : list num
+primos : num -> list num;
+primos n <= filter (primo, (2..n));
+
+! >: adjacentes [2,5,3,7] ;
+! >> [(2, 5), (5, 3), (3, 7)] : list (num # num)
+adjacentes : list alpha -> list (alpha # alpha);
+adjacentes xs <= zip (xs, tail xs);
+
+! >: minusculas "EsteTextoFicaSemMaisculos";
+! >> "steextoicaemaisculos" : list char
+minusculas : list char -> list char;
+minusculas xs <= filter (\x => elem (ord(x), (ord('a')..ord('z'))), xs);
+
+! >: ocorrencias ('n', "Jimenez & Manzano");
+! >> 3 : num
+ocorrencias : char # list char -> num;
+ocorrencias (x, xs) <= length (filter (\x' => x = x', xs));
+
+! 5.5 - Cifra de César
+! let2int 'a' = 0
+! let2int 'b' = 1
+! let2int 'z' = 25
+let2int : char -> num;
+let2int c <= ord c - ord 'a';
+
+! int2let 0 = 'a'
+! int2let 1 = 'b'
+! int2let 25 = 'z'
+int2let : num -> char;
+int2let n <= chr (ord 'a' + n);
+
+! >: deslocar (3, 'a');
+! >> 'd' : char
+! >: deslocar (3, 'y');
+! >> 'b' : char
+deslocar : num # char -> char;
+deslocar (n, c) <= if elem (ord c, ord 'a' .. ord 'z')
+                   then int2let ((let2int c + n) mod 26)
+                   else c;
+
+! >: recompor (3, 'd');
+! >> 'a' : char
+! >: recompor (3, 'b');
+! >> 'y' : char
+recompor : num # char -> char;
+recompor (n, c) <= if let2int c >= 0 and let2int c =< n - 1
+                   then int2let (26 + (let2int c - n))
+                   else if elem (ord c, ord 'a' .. ord 'z')
+                        then int2let ((let2int c - n) mod 26)
+                        else c;
+
+! >: codifica (3, "atacar base inimiga ao amanhecer");
+! >> "dwdfdu edvh lqlpljd dr dpdqkhfhu" : list char
+codifica : num # list char -> list char;
+codifica (n, xs) <= map (xs, \x => deslocar (n, toLower x));
+
+! >: decodifica (3, "dwdfdu edvh lqlpljd dr dpdqkhfhu");
+! >> "atacar base inimiga ao amanhecer" : list char
+decodifica : num # list char -> list char;
+decodifica (n, xs) <= map (xs, \x => recompor (n, x));

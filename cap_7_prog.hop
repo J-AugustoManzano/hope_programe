@@ -1,0 +1,105 @@
+! Capítulo 7: Funções especializadas
+
+uses cap_6;
+
+! >: duasVezes ((*3), 2);
+! >> 18 : num
+! >: duasVezes (reverse, [2,5,7]);
+! >> [2, 5, 7] : list num
+duasVezes : (alpha -> alpha) # alpha -> alpha;
+duasVezes (f, x) <= f (f x);
+
+! >: foldr ((*), 1, [1,2,3,4]) ;
+! >> 24 : num
+! >: foldr ((+), 0, [2,3,5]) ;
+! >> 10 : num
+foldr : (alpha # beta -> beta) # beta # list alpha -> beta;
+foldr (f, v, [])      <= v;
+foldr (f, v, x :: xs) <= f (x, foldr (f, v, xs));
+
+! >: longitude ([2,3,5]) ;
+! >> 3 : num
+longitude : list alpha -> num;
+longitude xs <= foldr ((\_, n => 1+n), 0, xs);
+
+! >: inversa ([2,3,5]) ;
+! >> [5, 3, 2] : list num
+inversa : list alpha -> list alpha;
+inversa xs <= foldr ((\x, xs => xs <> [x]), [], xs);
+
+! >: conc ([2,3,5], [7,9]) ;
+! >> [2, 3, 5, 7, 9] : list num
+conc : list alpha # list alpha -> list alpha;
+conc (xs, ys) <= foldr ((::), ys, xs);
+
+somacAux : num # list num -> num;
+somacAux (v, [])      <= v;
+somacAux (v, x :: xs) <= somacAux (v+x, xs);
+
+! >: somac [2,3,7] ;
+! >> 12 : num
+somac : list num -> num;
+somac xs <= somacAux (0, xs);
+
+! >: foldl ((+), 0, [1,2,3,4]) ;
+! >> 10 : num
+! >: foldl ((*), 1, [1,2,3,4]) ;
+! >> 24 : num
+foldl : (alpha # beta -> alpha) # alpha # list beta -> alpha;
+foldl (f, v, [])      <= v;
+foldl (f, v, x :: xs) <= foldl (f, f (v, x), xs);
+
+o : (beta -> gamma) # (alpha -> beta) -> alpha -> gamma;
+(f o g) x <= f(g x);
+
+type bit == num;
+
+! >: bin2int [1,0,1,1];
+! >> 13 : num
+! >: bin2int [0,1,0,1];
+! >> 10 : num
+bin2int : list bit -> num;
+bin2int xs <= foldr (\x,y => x + 2 * y, 0, xs);
+
+! >: int2bin 13;
+! >> [1, 0, 1, 1] : list bit
+! >: int2bin 10;
+! >> [0, 1, 0, 1] : list bit
+int2bin : num -> list bit;
+int2bin n <= if n < 2
+             then [n]
+             else n mod 2 :: int2bin (n div 2);
+
+! >: criaOcteto [1,0,1,1,0,0,1,1,1,0,0,0];
+! >> [1, 0, 1, 1, 0, 0, 1, 1] : list bit
+! >: criaOcteto [1,0,1,1];
+! >> [1, 0, 1, 1, 0, 0, 0, 0] : list bit
+criaOcteto : list bit -> list bit;
+criaOcteto bs <= take (8, (bs <> repeat (length bs, 0)));
+
+! >: codifica "abc";
+! >> [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0] : list bit
+codifica : list char -> list bit;
+codifica xs <= concat (map (xs, \x => criaOcteto (int2bin (ord x))));
+
+codifica' : list char -> list bit;
+codifica' xs <= concat (map (xs, criaOcteto o int2bin o ord));
+
+! >: separaOctetos [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0];
+! >> [[1, 0, 0, 0, 0, 1, 1, 0], [0, 1, 0, 0, 0, 1, 1, 0]] : list (list bit)
+separaOctetos : list bit -> list (list bit);
+separaOctetos [] <= [];
+separaOctetos bs <= take (8, bs) :: separaOctetos (drop (8, bs));
+
+! >: decodifica [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0];
+! >> "abc" : list char
+decodifica : list bit -> list char;
+decodifica bs <= map (separaOctetos bs, \x => chr (bin2int (x)));
+
+decodifica' : list bit -> list char;
+decodifica' bs <= map (separaOctetos bs, chr o bin2int);
+
+! >: transmite (id, "Alonso & Manzano");
+! >> "Alonso & Manzano" : list char
+transmite : (list bit -> list bit) # list char -> list char;
+transmite (c, t) <= decodifica (codifica (t));

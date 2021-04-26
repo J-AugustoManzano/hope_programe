@@ -1,0 +1,58 @@
+! Capítulo 9: Avaliação preguiçosa
+
+uses mylist;
+
+! >: meuMult (1+2, 2+3);
+! >> 15 : num
+meuMult : num # num -> num;
+meuMult (x, y) <= x * y;
+
+! >: meuMult' (1+2) (2+3);
+! >> 15 : num
+meuMult' : num -> num -> num;
+meuMult' x <= (\y => x * y);
+
+! >: inf;
+! run-time error - out of memory
+inf : num;
+inf <= 1 + inf;
+
+! >: quadrado (1+2);
+! >> 9 : num
+quadrado : num -> num;
+quadrado n <= n * n;
+
+! >: from 1;
+! >> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14. 15. 16. 17, ..., 140000] : list num
+! >: take (3, (from 1));
+! >> [1, 2, 3] : list num
+! >: filter ((=<3), (from 1));
+! >> [1, 2, 3] : list num
+! >: takeWhile ((=<3), (from 1));
+! >> [1, 2, 3] : list num
+from : num -> list num;
+from (n) <= if n > 140000
+            then error ("Maximum limit to infinity: 140000")
+            else n .. 140000;
+
+! >: uns;
+! run-time error - out of memory
+uns : list num;
+uns <= 1 :: uns;
+
+! >: uns';
+! >> [1, 1, 1, 1, 1, 1, 1, ... ] : list num
+! >: head uns';
+! >> 1 : num
+! >: take (2, uns');
+! >> [1, 1] : list num
+uns' : list num;
+uns' <= repeat (140000, 1);
+
+peneira : list num -> list num;
+peneira (p :: xs) <= p :: peneira (filter (\x => x mod p /= 0, xs));
+
+! >: take (15, primos2);
+! >> [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47] : list num
+primos2 : list num;
+primos2 <= peneira (from 2);

@@ -1,0 +1,173 @@
+! Capítulo 8: Tipos de dados customizados
+
+uses mylist;
+
+type string == list char;
+
+! >: souString [];
+! >> nil : string
+! >: souString "Alonso & Manzano";
+! >> "Alonso & Manzano" : string
+souString : string -> string;
+souString []        <= "";
+souString (x :: xs) <= x :: souString xs;
+
+type pos == num # num;
+
+! >: origem;
+! >> (0, 0) : pos
+origem : pos;
+origem <= (0,0);
+
+! >: esquerda (3,5);
+! >> (2, 5) : pos
+esquerda : pos -> pos;
+esquerda (x, y) <= (x - 1, y);
+
+type par alpha == alpha # alpha;
+
+! >: multiplica (2,5);
+! >> 10 : num
+multiplica : par num -> num;
+multiplica (x, y) <= x * y;
+
+! >: copia 1;
+! >> (1, 1) : par num
+! >: copia 'a';
+! >> ('a', 'a') : par char
+copia : alpha -> par alpha;
+copia x <= (x, x);
+
+data mov == aesquerda ++ adireita ++ acima ++ abaixo;
+
+! >: movimento (acima, (2,5));
+! >> (2, 6) : pos
+! >: movimento (abaixo, (2,5));
+! >> (2, 4) : pos
+! >: movimento (aesquerda, (2,5));
+! >> (1, 5) : pos
+! >: movimento (adireita, (2,5));
+! >> (3, 5) : pos
+movimento : mov # pos -> pos;
+movimento (aesquerda, (x, y)) <= (x - 1, y);
+movimento (adireita,  (x, y)) <= (x + 1, y);
+movimento (acima,     (x, y)) <= (x, y + 1);
+movimento (abaixo,    (x, y)) <= (x, y - 1);
+
+! >: movimentos ([acima, aesquerda], (2,5));
+! >> (1, 6) : pos
+movimentos : list mov # pos -> pos;
+movimentos ([], p)      <= p;
+movimentos (m :: ms, p) <= movimentos (ms, movimento (m, p));
+
+! >: movimento (oposto acima, (2,5));
+! >> (2, 4) : pos
+oposto : mov -> mov;
+oposto aesquerda <= adireita;
+oposto adireita  <= aesquerda;
+oposto acima     <= abaixo;
+oposto abaixo    <= acima;
+
+data figura == circulo num ++ retangulo (num # num);
+
+! >: circulo;
+! >> circulo : num -> figura
+! >: retangulo;
+! >> retangulo : num # num -> figura
+
+! >: quadrado 5;
+! >> retangulo (5, 5) : figura
+quadrado : num -> figura;
+quadrado n <= retangulo (n, n);
+
+! >: area (circulo 1);
+! >> 3.14159265358979 : num
+! >: area (circulo 2);
+! >> 12.5663706143592 : num
+! >: area (retangulo (2,5));
+! >> 10 : num
+! >: area (quadrado 3);
+! >> 9 : num
+area : figura -> num;
+area (circulo r)        <= pi * pow (r, 2);
+area (retangulo (x, y)) <= x * y;
+
+data maybe alpha == nothing ++ just alpha;
+
+! >: divisaoSeg (6, 3);
+! >> just 2 : maybe num
+! >: divisaoSeg (6, 0);
+! >> nothing : maybe num
+divisaoSeg : num # num -> maybe num;
+divisaoSeg (_, 0) <= nothing;
+divisaoSeg (m, n) <= just (m div n);
+
+! >: headSeg [2,3,5];
+! >> just 2 : maybe num
+! >: headSeg [];
+! >> nothing : maybe alpha
+headSeg : list alpha -> maybe alpha;
+headSeg [] <= nothing;
+headSeg xs <= just (head xs);
+
+data nat == zero ++ succ nat;
+
+! >: zero;
+! >> zero : nat
+! >: succ;
+! >> succ : nat -> nat
+
+! >: nat2int (succ (succ (succ zero)));
+! >> 3 : num
+nat2int : nat -> num;
+nat2int zero     <= 0;
+nat2int (succ n) <= 1 + nat2int n;
+
+! >: int2nat 3;
+! >> succ (succ (succ zero)) : nat
+int2nat : num -> nat;
+int2nat 0       <= zero;
+int2nat (n + 1) <= succ (int2nat n);
+
+! >: somaNat ((succ (succ zero)), (succ zero));
+! >> succ (succ (succ zero)) : nat
+somaNat : nat # nat -> nat;
+somaNat (zero, n)   <= n;
+somaNat (succ m, n) <= succ (somaNat (m, n));
+
+data lista alpha == nulo ++ cons alpha (lista alpha);
+
+! >: longitNat (cons 2 (cons 3 (cons 5 nulo)));
+! >> 3 : num
+longitNat : lista alpha -> num;
+longitNat nulo        <= 0;
+longitNat (cons _ xs) <= 1 + longitNat xs;
+
+data arvore == folha num ++ noh arvore num arvore;
+
+ehArvore : arvore;
+ehArvore <= noh (noh (folha 1) 3 (folha 4)) 5 (noh (folha 6) 7 (folha 9));
+
+! >: ocorre (4, ehArvore);
+! >> true : truval
+! >: ocorre (10, ehArvore);
+! >> false : truval
+ocorre : num # arvore -> truval;
+ocorre (m, folha n)     <= m = n;
+ocorre (m, (noh i n d)) <= m = n or (ocorre (m, i) or ocorre (m, d));
+
+! >: desfolhar ehArvore;
+! >> [1, 3, 4, 5, 6, 7, 9] : list num
+desfolhar : arvore -> list num;
+desfolhar (folha n)   <= [n];
+desfolhar (noh i n d) <= desfolhar i <> [n] <> desfolhar d;
+
+! >: ocorreNaArvoreOrd (4, ehArvore);
+! >> true : truval
+! >: ocorreNaArvoreOrd (10, ehArvore);
+! >> false : truval
+ocorreNaArvoreOrd : num # arvore -> truval;
+ocorreNaArvoreOrd (m, (folha n))   <= m = n;
+ocorreNaArvoreOrd (m, (noh i n d)) <= if m = n then true else
+                                      if m < n then ocorreNaArvoreOrd (m, i)
+                                      else ocorreNaArvoreOrd (m, d);

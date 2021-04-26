@@ -1,0 +1,15 @@
+! Capítulo 10: Módulos ou bibliotecas
+! Não usar nesta série o arquivo de módulo "mylist.hop"
+
+! >: uses teste1;
+! module teste1, line 2: semantic error - isLower: undefined variable
+! >:
+
+isLower : char -> truval;
+isLower c <= 'a' =< c and c =< 'z';
+
+isAlpha : char -> truval;
+isAlpha c <= isLower c or isUpper c;  
+
+isUpper : char -> truval;
+isUpper c <= 'A' =< c and c =< 'Z';

@@ -1,0 +1,26 @@
+! Capítulo 10: Módulos ou bibliotecas
+! Não usar nesta série o arquivo de módulo "mylist.hop"
+
+uses teste8;
+infixr somax : 5;
+infixr ** : 7;
+dec somax : num # num -> num;
+dec ** : num # num -> num;
+
+--- x somax y <= x + y;
+
+--- (**) <= pow;
+
+! >: pow (2,3);
+! >> 8 : num
+! >: 2 ** 3;
+! >> 8 : num
+
+! >: isAlpha 'A';
+! >> true : truval
+! >: soma (3, 4);
+! >> 7 : num
+! >: pow (2, 3);
+! >> 8 : num
+! >: 2 ** 3;
+! >> 8 : num

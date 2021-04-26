@@ -1,0 +1,33 @@
+! Capítulo 10: Módulos ou bibliotecas
+! Não usar nesta série o arquivo de módulo "mylist.hop"
+
+uses teste3, teste4, teste5, teste6, teste7;
+dec soma : num # num -> num;
+dec subtracao : num # num -> num;
+dec mutiplicacao : num # num -> num;
+dec divisao : num # num -> num;
+
+--- soma (x, y) <= x + y;
+
+--- subtracao (x, y) <= x - y;
+
+--- mutiplicacao (x, y) <= x * y;
+
+--- divisao (x, y) <= x / y;
+
+! >: soma (2, 3);
+! >> 5 : num
+! >: subtracao (2, 3);
+! >> -1 : num
+! >: mutiplicacao (2,3);
+! >> 6 : num
+! >: divisao (2, 3);
+! >> 0.666666666666667 : num
+
+! >: isAlpha 'x';
+! >> true : truval
+! >: isAlpha 'A';
+! >> true : truval
+! >: isAlpha '9';
+! >> false : truval
+

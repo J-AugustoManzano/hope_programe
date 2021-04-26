@@ -1,0 +1,28 @@
+! Capítulo 1: Introdução à programação funcional
+
+uses mylist;
+
+! >: soma(4);
+! >> 10 : num
+soma : num -> num;
+soma n <= sum (1..n);
+
+! >: dobro(3);
+! >> 6 : num
+dobro : num -> num;
+dobro x <= x + x;
+
+! >: somatorio [2,3,7];
+! >> 12 : num
+somatorio : list num -> num;
+somatorio []        <= 0;
+somatorio (x :: xs) <= x + somatorio xs;
+! >: classifica [4,6,2,3];
+! >> [2, 3, 4, 6] : list num
+! >: classifica "deacb";
+! >> "abcde" : list char
+classifica : list alpha -> list alpha;
+classifica [] <= [];
+classifica (x :: xs) <= classifica menores <> [x] <> classifica maiores
+                        where menores == comp (xs, \a => a =< x)
+                        where maiores == comp (xs, \b => b > x);

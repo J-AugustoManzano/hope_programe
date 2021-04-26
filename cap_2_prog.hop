@@ -1,0 +1,23 @@
+! Capítulo 2: Introdução à programação com Hope
+
+uses cap_1;
+
+! >: take (dobro 2, [1,2,3,4,5,6]);
+! >> [1, 2, 3, 4] : list num
+dobro : num -> num;
+dobro x <= x + x;
+
+! >: quadruplo 10;
+! >> 40 : num
+quadruplo : num -> num;
+quadruplo x <= dobro (dobro x);
+
+! >: fatorial (dobro 2);
+! >> 24 : num
+fatorial : num -> num;
+fatorial n <= product (1..n);
+
+! >: dobro (media [1,5,3]);
+! >> 6 : num
+media : list num -> num;
+media ns <= sum ns div length ns;

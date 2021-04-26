@@ -1,0 +1,56 @@
+! Capítulo 4: Definição de funções
+
+uses cap_3;
+
+abs : num -> num;
+abs n <= if n >= 0 then n else 0-n;
+
+not : truval -> truval;
+not true <= false;
+not false <= true;
+
+and : truval # truval -> truval;
+false and p <= false;
+true and p  <= p;
+
+infix and1 : 2;
+and1 : truval # truval -> truval;
+true and1 true <= true;
+_    and1 _    <= false;
+
+infix and2 : 2;
+and2 : truval # truval -> truval;
+true and2  x <= x;
+_    and2  _ <= false;
+
+teste1 : list char -> truval;
+teste1 ['a', _, _] <= true;
+teste1 _           <= false;
+
+teste2 : list char -> truval;
+teste2 ('a'::_) <= true;
+teste2 _        <= false;
+
+soma4 : num # num -> num;
+soma4 (x, y) <= x + y;
+
+soma5 : num -> num -> num;
+soma5 <= \x => \y => x + y;
+
+const' : alpha -> beta -> alpha;
+const' x <= \_ => x;
+
+! >: calcImpar 5;
+! >> 11 : num
+calcImpar : num -> num;
+calcImpar x <= 2*x+1;
+
+! >: impares 4;
+! >> [1, 3, 5, 7] : list num
+impares : num -> list num;
+impares n <= map ((0..n-1), calcImpar);
+
+! >: impares' 4;
+! >> [1, 3, 5, 7] : list num
+impares' : num -> list num;
+impares' n <= map ((0..n-1), \x => 2*x+1);

@@ -1,0 +1,32 @@
+! Capítulo 3: Tipos de dados
+
+uses cap_2;
+
+! >: soma2 (2,3);
+! >> 5 : num
+soma2 : num # num -> num;
+soma2 (x, y) <= x + y;
+
+! >: deZeroA 5;
+! >> [0, 1, 2, 3, 4, 5] : list num
+deZeroA : num -> list num;
+deZeroA n <= (0..n);
+
+! >: soma3;
+! >> soma3 : num -> num -> num
+! >: soma3 2;
+! >> soma3 2 : num -> num
+! >: soma3 2 5;
+! >> 7 : num
+! >: (soma3 2) 3;
+! >> 5 : num
+soma3 : num -> num -> num;
+soma3 x y <= x + y;
+
+mult : num -> num -> num -> num;
+mult x y z <= x * y * z;
+
+! >: suc 3;
+! >> 4 : num
+suc : num -> num;
+suc <= soma3 1;

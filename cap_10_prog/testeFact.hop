@@ -1,0 +1,23 @@
+!! Demonstração de encapsulamento
+!! Linguagem Hope – Capítulo 10
+
+!  Arquivo de módulo: testeFact
+!  ============================
+
+
+!  Seção: pública (modo padrão)
+!  ----------------------------
+
+   fact : num -> num;
+
+
+!  Seção: privada
+!  --------------
+
+   private;
+
+   factBase : num # num -> num;
+   factBase (0, x) <= x;
+   factBase (n, x) <= factBase (n - 1, n * x);
+
+   fact n <= factBase (n, 1);

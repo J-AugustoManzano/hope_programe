@@ -1,0 +1,7 @@
+! Capítulo 10: Módulos ou bibliotecas
+! Não usar nesta série o arquivo de módulo "mylist.hop"
+
+dec isLower, isUpper, isAlpha : char -> truval;
+--- isLower c <= 'a' =< c and c =< 'z';
+--- isUpper c <= 'A' =< c and c =< 'Z';
+--- isAlpha c <= isLower c or isUpper c;
